@@ -21,6 +21,7 @@
     <hr>
     <div class="container mt-5">
         <h2> Acompanhamento de Viagem</h2>
+        
         <div class="row">
             {% for viagem in viagens %}
             <div class="col-md-4">
@@ -36,6 +37,13 @@
                         <h5 class="card-title">{{ viagem[0] }}</h5>
                         <p class="card-text">Data Prevista: {{ viagem[1] }}</p>
                         <p class="card-text">Status: {{ viagem[2] }}</p>
+                        
+                        <form action="{{url_for('excluir_viagem')}}"method="POST">
+                            <input type="hidden" name ="viagem_id" value ="{{viagem[4]}}">
+                            <button type="submit" class="btn btn-danger">Excluir</button>
+                        </form>
+
+
                     </div>
                 </div>
             </div>
@@ -44,8 +52,13 @@
             {% endfor %}
 
         </div>
+        <form action="{{url_for('apagar_usuario')}}"method="POST">
+            <input type="hidden" name ="email" value ="{{usuario}}">
+            <button type="submit" class="btn btn-danger">Excluir Usuario</button>
+        </form>
     </div>
     <div class="fileira">
+
         <a href="/nova" class="btn btn-primary">Nova Viagem</a>
         <a href="{{ url_for('logout') }}" class="logout">Sair</a>
     </div>

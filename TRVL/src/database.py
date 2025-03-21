@@ -14,6 +14,8 @@ def criar_tabelas():
                    (id integer primary key,id_usuario text,destino text,data_prevista text,
                    status text,imagem text,gastos real,dinheiro_guardado real)''')
     
+
+    
     conexao.commit()
 
 def criar_usuario(email, nome, senha):
@@ -49,7 +51,7 @@ def buscar_viagens(id_usuario):
     conexao = conectar_banco()
     cursor = conexao.cursor()
     # PREENCHA AQUI, BUSCAR TODAS AS VIAGENS ordem: destino, data prevista, status, imagem
-    cursor.execute("SELECT destino, data_prevista,status,imagem FROM projetos_de_viagem WHERE id_usuario=?",(id_usuario,))
+    cursor.execute("SELECT destino, data_prevista,status,imagem, id FROM projetos_de_viagem WHERE id_usuario=?",(id_usuario,))
     viagens = cursor.fetchall()
     conexao.close()
 
@@ -62,7 +64,8 @@ def deletar_viagens(id_viagem):
     cursor = conexao.cursor()
     
     try:
-        cursor.execute('DELETE FROM projetos_de_viagem WHERE id=?',(id_viagem,))
+    
+        cursor.execute('DELETE  FROM projetos_de_viagem WHERE id=?',(id_viagem,))
         conexao.commit()
         return True
     except sqlite3.IntegrityError:
@@ -87,14 +90,35 @@ def mostrar_id_viagem(id_email):
     finally:
         conexao.close() 
         
-def deletar_usuario(deletar_usuario):
+def deletar_usuario(email):
     
     
     conexao = conectar_banco()
     cursor = conexao.cursor()
     
     try:
-        cursor.execute('DELETE FROM usuarios WHERE email=?',(deletar_usuario,))
+        #DELETA O USUARIO CONFORME O EMAIL INFORMADO
+        cursor.execute('DELETE FROM usuarios WHERE email=?',(email,))
+        conexao.commit()
+        cursor.execute('DELETE FROM projetos_de_viagem WHERE id_usuario=?',(email,))
+        conexao.commit()
+        #CHAMA FUNÇÃO DE DELETAR VIAGENS
+        return True
+    except sqlite3.IntegrityError:
+        return False
+    finally:
+        conexao.close() 
+        
+        
+def mudar_nome(nome,email):
+    
+    
+    conexao = conectar_banco()
+    cursor = conexao.cursor()
+    
+    try:
+        #ATUALIZA O NOME COM BASE NO NOME INFORMADO
+        cursor.execute("UPDATE usuarios SET nome='paulo' WHERE nome=? AND email=?",(nome,email,))
         conexao.commit()
         return True
     except sqlite3.IntegrityError:
@@ -102,9 +126,47 @@ def deletar_usuario(deletar_usuario):
     finally:
         conexao.close() 
         
+        
+def mudar_senha():
+    
+    
+    conexao = conectar_banco()
+    cursor = conexao.cursor()
+    
+    try:
+        #ATUALIZA A SENHA CONFORME O NOME E A SENHA INFORMADA.
+        cursor.execute("UPDATE usuarios SET senha='5' WHERE senha='123' and nome='123'")
+        conexao.commit()
+        return True
+    except sqlite3.IntegrityError:
+        return False
+    finally:
+        conexao.close() 
+        
+
+def editar_viagem(email):
+    
+    
+    conexao = conectar_banco()
+    cursor = conexao.cursor()
+    
+    try:
+        #ATUALIZA VIAGEM CONFORME O NOME E A SENHA INFORMADA.
+        cursor.execute("UPDATE projetos_de_viagem SET destino ='brasil',data_prevista='27012004',status='pendente',imagem='',gastos='1500',dinheiro_guardado='0' WHERE id_usuario=? ",(email,))
+        conexao.commit()
+        return True
+    except sqlite3.IntegrityError:
+        return False
+    finally:
+        conexao.close() 
+        
+        
 if __name__ == '__main__': 
     conexao = conectar_banco()
     criar_tabelas()
-    id_viagens = mostrar_id_viagem("leetobr@gmail.com")
-    print(id_viagens)
-    deletar_usuario("leetobr@gmail.com")
+    id_viagens=mostrar_id_viagem("leetobr@gmail.com")
+   # deletar_usuario("leetobr2@gmail.com")
+   # mudar_nome("leeto","leetobr@gmail.com")
+    #editar_viagem("leetobr@gmail.com")
+    #mudar_senha()
+    #deletar_viagens(1)

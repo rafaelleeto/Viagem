@@ -98,5 +98,25 @@ def nova_viagem():
         return redirect(url_for('home'))
     return render_template('nova_viagem.html')
 
+@app.route('/excluir_viagem',methods=['GET','POST'])
+def excluir_viagem():
+    viagem_id = request.form.get('viagem_id')
+    
+    database.deletar_viagens(viagem_id)
+    
+    return redirect(url_for('home'))
+
+
+
+@app.route('/deletar_usuario',methods=['GET','POST'])
+def apagar_usuario():
+    id_usuario = request.form.get('email')
+    
+    database.deletar_usuario(id_usuario)
+    
+    return redirect(url_for('index'))
+
+
+    
 if __name__ == '__main__':
     app.run(debug=True) 
